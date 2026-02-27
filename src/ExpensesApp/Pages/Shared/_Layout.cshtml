@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] – Expenses Management</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <span class="nav-logo">💼</span>
+                <span class="nav-title">ExpensesApp</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Dashboard</a></li>
+                <li><a href="/Expenses" class="nav-link">Expenses</a></li>
+                <li><a href="/Expenses/Pending" class="nav-link">Pending</a></li>
+                <li><a href="/Users" class="nav-link">Users</a></li>
+                <li><a href="/swagger" class="nav-link nav-link-api" target="_blank">API</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <span>Expenses Management System · Azure SQL · .NET 8 · Managed Identity</span>
+        </div>
+    </footer>
+</body>
+</html>

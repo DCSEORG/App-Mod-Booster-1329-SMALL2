@@ -1,0 +1,62 @@
+@page "/Expenses/Pending"
+@model ExpensesApp.Pages.Expenses.PendingModel
+@{
+    ViewData["Title"] = "Pending Approvals";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Pending Approvals</h1>
+        <p class="page-subtitle">Expenses awaiting manager review</p>
+    </div>
+    <a href="/" class="btn btn-outline">← Dashboard</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.DbError))
+{
+    <div class="alert alert-warning">⚠️ @Model.DbError</div>
+}
+
+<div class="card">
+    @if (!Model.Expenses.Any())
+    {
+        <div class="empty-state-full">
+            <span class="empty-icon">✅</span>
+            <p>No pending expenses – you're all caught up!</p>
+        </div>
+    }
+    else
+    {
+        <div class="expense-table-wrapper">
+            <table class="expense-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Employee</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Submitted</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model.Expenses)
+                    {
+                        <tr>
+                            <td>@e.ExpenseId</td>
+                            <td>@e.UserName</td>
+                            <td><span class="category-badge">@e.CategoryName</span></td>
+                            <td>@(e.Description ?? "—")</td>
+                            <td class="amount">£@e.AmountGBP.ToString("N2")</td>
+                            <td>@(e.SubmittedAt?.ToString("dd MMM yyyy") ?? "—")</td>
+                            <td class="actions">
+                                <a href="/Expenses/Details/@e.ExpenseId" class="btn btn-sm btn-outline">View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

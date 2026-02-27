@@ -1,0 +1,61 @@
+@page
+@model ExpensesApp.Pages.Users.CreateModel
+@{
+    ViewData["Title"] = "Add User";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Add New User</h1>
+        <p class="page-subtitle">Create a new employee or manager account</p>
+    </div>
+    <a href="/Users" class="btn btn-outline">← Back</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<div class="card form-card">
+    <form method="post">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="UserName">Full Name</label>
+                <input type="text" id="UserName" name="UserName" class="form-control"
+                       placeholder="Jane Smith" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Email">Email Address</label>
+                <input type="email" id="Email" name="Email" class="form-control"
+                       placeholder="jane@example.co.uk" required />
+            </div>
+
+            <div class="form-group">
+                <label for="RoleId">Role</label>
+                <select id="RoleId" name="RoleId" class="form-control" required>
+                    @foreach (var r in Model.Roles)
+                    {
+                        <option value="@r.RoleId">@r.RoleName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ManagerId">Manager (optional)</label>
+                <select id="ManagerId" name="ManagerId" class="form-control">
+                    <option value="">None</option>
+                    @foreach (var u in Model.Managers)
+                    {
+                        <option value="@u.UserId">@u.UserName</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create User</button>
+        </div>
+    </form>
+</div>

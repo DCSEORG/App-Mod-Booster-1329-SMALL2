@@ -1,0 +1,59 @@
+@page
+@model ExpensesApp.Pages.Users.IndexModel
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Users</h1>
+        <p class="page-subtitle">Manage employees and managers</p>
+    </div>
+    <a href="/Users/Create" class="btn btn-primary">+ Add User</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.DbError))
+{
+    <div class="alert alert-warning">⚠️ @Model.DbError</div>
+}
+
+<div class="card">
+    <div class="expense-table-wrapper">
+        <table class="expense-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Manager</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model.Users)
+                {
+                    <tr>
+                        <td>@u.UserName</td>
+                        <td>@u.Email</td>
+                        <td><span class="role-badge role-@u.RoleName.ToLower()">@u.RoleName</span></td>
+                        <td>@(u.ManagerName ?? "—")</td>
+                        <td>
+                            @if (u.IsActive)
+                            { <span class="status-badge status-approved">Active</span> }
+                            else
+                            { <span class="status-badge status-rejected">Inactive</span> }
+                        </td>
+                        <td class="actions">
+                            <a href="/Expenses?userId=@u.UserId" class="btn btn-sm btn-outline">Expenses</a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Users.Any())
+                {
+                    <tr><td colspan="6" class="empty-state">No users found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

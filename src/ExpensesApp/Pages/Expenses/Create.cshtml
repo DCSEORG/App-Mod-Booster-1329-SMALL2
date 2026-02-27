@@ -1,0 +1,78 @@
+@page
+@model ExpensesApp.Pages.Expenses.CreateModel
+@{
+    ViewData["Title"] = "New Expense";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Submit New Expense</h1>
+        <p class="page-subtitle">Add a new expense claim for approval</p>
+    </div>
+    <a href="/Expenses" class="btn btn-outline">← Back</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<div class="card form-card">
+    <form method="post">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="UserId">Employee</label>
+                <select id="UserId" name="UserId" class="form-control" required>
+                    <option value="">Select employee…</option>
+                    @foreach (var u in Model.Users)
+                    {
+                        <option value="@u.UserId">@u.UserName (@u.Email)</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="CategoryId">Category</label>
+                <select id="CategoryId" name="CategoryId" class="form-control" required>
+                    <option value="">Select category…</option>
+                    @foreach (var c in Model.Categories)
+                    {
+                        <option value="@c.CategoryId">@c.CategoryName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="AmountGBP">Amount (£)</label>
+                <div class="input-prefix-wrapper">
+                    <span class="input-prefix">£</span>
+                    <input type="number" id="AmountGBP" name="AmountGBP" step="0.01" min="0.01"
+                           class="form-control" placeholder="0.00" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="ExpenseDate">Expense Date</label>
+                <input type="date" id="ExpenseDate" name="ExpenseDate"
+                       class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+            </div>
+
+            <div class="form-group form-group-full">
+                <label for="Description">Description</label>
+                <textarea id="Description" name="Description" class="form-control"
+                          rows="3" placeholder="Brief description of the expense…"></textarea>
+            </div>
+
+            <div class="form-group form-group-full">
+                <label for="ReceiptFile">Receipt Reference (optional)</label>
+                <input type="text" id="ReceiptFile" name="ReceiptFile"
+                       class="form-control" placeholder="/receipts/your-receipt.jpg" />
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" name="action" value="draft" class="btn btn-secondary">Save as Draft</button>
+            <button type="submit" name="action" value="submit" class="btn btn-primary">Submit for Approval</button>
+        </div>
+    </form>
+</div>
