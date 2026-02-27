@@ -6,6 +6,7 @@ Deploys stored procedures to the Azure SQL database using Azure AD CLI authentic
 
 import os
 import sys
+import re
 import struct
 import pyodbc
 from azure.identity import AzureCliCredential
@@ -51,7 +52,9 @@ print(f"Reading SQL script: {SQL_SCRIPT_FILE}")
 with open(SQL_SCRIPT_FILE, "r", encoding="utf-8") as f:
     sql_content = f.read()
 
-batches = [b.strip() for b in sql_content.split("\nGO") if b.strip()]
+# Split on GO statements – handle both Unix (\n) and Windows (\r\n) line endings
+sql_content = sql_content.replace('\r\n', '\n')
+batches = [b.strip() for b in re.split(r'\nGO\b', sql_content, flags=re.IGNORECASE) if b.strip()]
 
 print(f"Executing {len(batches)} SQL batch(es)…")
 errors = 0

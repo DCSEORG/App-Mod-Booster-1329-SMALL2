@@ -99,8 +99,23 @@ echo "  ✓  App Service configured"
 
 # ── 4. SQL Firewall rules ─────────────────────────────────────────────────────
 echo ""
-echo "4/4 Waiting 30 s for SQL Server to be ready…"
-sleep 30
+echo "4/4 Waiting for SQL Server to be ready…"
+# Poll SQL Server availability instead of fixed sleep
+SQL_READY=0
+for i in $(seq 1 10); do
+    if az sql server show --resource-group "$RESOURCE_GROUP" --name "$SQL_SERVER_NAME" \
+        --query "state" -o tsv 2>/dev/null | grep -q "Ready"; then
+        SQL_READY=1
+        echo "  ✓  SQL Server is ready (attempt $i)"
+        break
+    fi
+    echo "  ⏳ Waiting for SQL Server... attempt $i/10 (30s)"
+    sleep 30
+done
+
+if [[ $SQL_READY -eq 0 ]]; then
+    echo "  ⚠️  SQL Server not confirmed ready – proceeding anyway"
+fi
 
 echo "  Configuring SQL firewall rules…"
 

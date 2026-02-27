@@ -7,6 +7,7 @@ permissions in Azure SQL, using Azure AD CLI authentication.
 
 import os
 import sys
+import re
 import struct
 import shutil
 import subprocess
@@ -75,7 +76,9 @@ print(f"Reading patched script: {PATCHED_SCRIPT_FILE}")
 with open(PATCHED_SCRIPT_FILE, "r", encoding="utf-8") as f:
     sql_content = f.read()
 
-batches = [b.strip() for b in sql_content.split("\nGO") if b.strip()]
+# Split on GO statements – handle both Unix (\n) and Windows (\r\n) line endings
+sql_content = sql_content.replace('\r\n', '\n')
+batches = [b.strip() for b in re.split(r'\nGO\b', sql_content, flags=re.IGNORECASE) if b.strip()]
 
 print(f"Executing {len(batches)} SQL batch(es)…")
 errors = 0

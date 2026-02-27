@@ -69,17 +69,24 @@
         @if (Model.Expense.StatusName == "Submitted")
         {
             <p class="manager-note">Manager action required:</p>
+            <div class="form-group">
+                <label for="reviewerSelect">Reviewing as (Manager)</label>
+                <select id="reviewerSelect" class="form-control" onchange="
+                    document.querySelectorAll('input[name=reviewedBy]').forEach(el => el.value = this.value)">
+                    @foreach (var mgr in Model.Managers)
+                    {
+                        <option value="@mgr.UserId">@mgr.UserName</option>
+                    }
+                </select>
+            </div>
             <form method="post" asp-page-handler="Approve">
                 <input type="hidden" name="id" value="@Model.Expense.ExpenseId" />
-                <div class="form-group">
-                    <label>Reviewing as (User ID)</label>
-                    <input type="number" name="reviewedBy" class="form-control" value="2" />
-                </div>
+                <input type="hidden" name="reviewedBy" value="@(Model.Managers.FirstOrDefault()?.UserId ?? 0)" />
                 <button type="submit" class="btn btn-success btn-full">✅ Approve</button>
             </form>
             <form method="post" asp-page-handler="Reject" class="mt-2">
                 <input type="hidden" name="id" value="@Model.Expense.ExpenseId" />
-                <input type="hidden" name="reviewedBy" value="2" />
+                <input type="hidden" name="reviewedBy" value="@(Model.Managers.FirstOrDefault()?.UserId ?? 0)" />
                 <button type="submit" class="btn btn-danger btn-full">❌ Reject</button>
             </form>
         }

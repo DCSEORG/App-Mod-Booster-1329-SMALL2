@@ -58,9 +58,21 @@ echo "  ✓  pyodbc and azure-identity installed"
 # ── 2. Import database schema ─────────────────────────────────────────────────
 echo ""
 echo "2/6 Importing database schema…"
-echo "  Waiting 30 s for SQL Server readiness…"
-sleep 30
-python3 run-sql.py
+# Poll for SQL connectivity instead of fixed sleep
+SQL_READY=0
+for i in $(seq 1 6); do
+    if python3 run-sql.py 2>/dev/null; then
+        SQL_READY=1
+        break
+    fi
+    echo "  ⏳ SQL not ready yet – retrying in 30s (attempt $i/6)…"
+    sleep 30
+done
+
+if [[ $SQL_READY -eq 0 ]]; then
+    echo "✗  Failed to import database schema after 6 attempts."
+    exit 1
+fi
 echo "  ✓  Schema imported"
 
 # ── 3. Configure database roles ───────────────────────────────────────────────
