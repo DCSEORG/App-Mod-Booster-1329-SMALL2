@@ -1,0 +1,145 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="hero-section">
+    <div class="hero-content">
+        <div class="hero-icon">💼</div>
+        <h1>Expenses Management</h1>
+        <p class="hero-subtitle">Track, submit and approve business expenses with ease</p>
+        @if (!string.IsNullOrEmpty(Model.DbError))
+        {
+            <div class="db-error-banner">
+                <span class="error-icon">⚠️</span>
+                <div>
+                    <strong>Demo Mode – Database Unavailable</strong><br />
+                    <small>@Model.DbError</small>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Stats cards -->
+    <div class="stats-row">
+        <div class="stat-card stat-total">
+            <div class="stat-icon">📋</div>
+            <div class="stat-info">
+                <div class="stat-number">@Model.TotalExpenses</div>
+                <div class="stat-label">Total Expenses</div>
+            </div>
+        </div>
+        <div class="stat-card stat-pending">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-info">
+                <div class="stat-number">@Model.PendingCount</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+        </div>
+        <div class="stat-card stat-approved">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+                <div class="stat-number">£@Model.TotalApprovedGBP.ToString("N2")</div>
+                <div class="stat-label">Approved This Year</div>
+            </div>
+        </div>
+        <div class="stat-card stat-users">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+                <div class="stat-number">@Model.UserCount</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-grid">
+            <a href="/Expenses" class="action-card">
+                <span class="action-icon">📄</span>
+                <span class="action-title">View All Expenses</span>
+                <span class="action-desc">Browse and filter expenses</span>
+            </a>
+            <a href="/Expenses/Create" class="action-card action-primary">
+                <span class="action-icon">➕</span>
+                <span class="action-title">New Expense</span>
+                <span class="action-desc">Submit a new expense claim</span>
+            </a>
+            <a href="/Expenses/Pending" class="action-card action-warning">
+                <span class="action-icon">🔍</span>
+                <span class="action-title">Review Pending</span>
+                <span class="action-desc">Approve or reject submissions</span>
+            </a>
+            <a href="/Users" class="action-card">
+                <span class="action-icon">👤</span>
+                <span class="action-title">Manage Users</span>
+                <span class="action-desc">View and edit user accounts</span>
+            </a>
+            <a href="/swagger" class="action-card action-api">
+                <span class="action-icon">🔌</span>
+                <span class="action-title">API Explorer</span>
+                <span class="action-desc">Swagger / OpenAPI docs</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Expenses -->
+    <div class="recent-expenses">
+        <div class="section-header">
+            <h2>Recent Expenses</h2>
+            <a href="/Expenses" class="view-all">View all →</a>
+        </div>
+        <div class="expense-table-wrapper">
+            <table class="expense-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Employee</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var expense in Model.RecentExpenses)
+                    {
+                        <tr>
+                            <td>@(expense.Description ?? "—")</td>
+                            <td>@expense.UserName</td>
+                            <td><span class="category-badge">@expense.CategoryName</span></td>
+                            <td class="amount">£@expense.AmountGBP.ToString("N2")</td>
+                            <td>@expense.ExpenseDate.ToString("dd MMM yyyy")</td>
+                            <td><span class="status-badge status-@expense.StatusName.ToLower()">@expense.StatusName</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Summary by Category -->
+    <div class="summary-section">
+        <h2>Spending by Category</h2>
+        <div class="summary-bars">
+            @{
+                var maxAmount = Model.CategorySummary.Any() ? Model.CategorySummary.Max(s => s.TotalAmountMinor) : 1;
+            }
+            @foreach (var item in Model.CategorySummary)
+            {
+                var pct = maxAmount > 0 ? (int)((item.TotalAmountMinor / (double)maxAmount) * 100) : 0;
+                <div class="summary-bar-row">
+                    <span class="summary-label">@item.GroupName</span>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:@pct%"></div>
+                    </div>
+                    <span class="summary-amount">£@item.TotalAmountGBP.ToString("N2")</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>

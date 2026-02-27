@@ -1,0 +1,92 @@
+@page "/Expenses/Details/{id:int}"
+@model ExpensesApp.Pages.Expenses.DetailsModel
+@{
+    ViewData["Title"] = $"Expense #{Model.Expense?.ExpenseId}";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Expense #@Model.Expense?.ExpenseId</h1>
+        <p class="page-subtitle">Expense claim details</p>
+    </div>
+    <a href="/Expenses" class="btn btn-outline">← Back</a>
+</div>
+
+@if (Model.Expense == null)
+{
+    <div class="alert alert-danger">Expense not found.</div>
+    return;
+}
+
+@if (!string.IsNullOrEmpty(Model.DbError))
+{
+    <div class="alert alert-warning">⚠️ @Model.DbError</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.ActionMessage))
+{
+    <div class="alert alert-success">@Model.ActionMessage</div>
+}
+
+<div class="detail-grid">
+    <div class="card detail-card">
+        <h2>Expense Information</h2>
+        <dl class="detail-list">
+            <dt>Employee</dt><dd>@Model.Expense.UserName</dd>
+            <dt>Category</dt><dd><span class="category-badge">@Model.Expense.CategoryName</span></dd>
+            <dt>Amount</dt><dd class="amount-large">£@Model.Expense.AmountGBP.ToString("N2")</dd>
+            <dt>Date</dt><dd>@Model.Expense.ExpenseDate.ToString("dd MMMM yyyy")</dd>
+            <dt>Status</dt><dd><span class="status-badge status-@Model.Expense.StatusName.ToLower()">@Model.Expense.StatusName</span></dd>
+            <dt>Description</dt><dd>@(Model.Expense.Description ?? "—")</dd>
+            <dt>Receipt</dt><dd>@(Model.Expense.ReceiptFile ?? "—")</dd>
+            <dt>Submitted</dt><dd>@(Model.Expense.SubmittedAt?.ToString("dd MMM yyyy HH:mm") ?? "—")</dd>
+            @if (Model.Expense.ReviewedBy.HasValue)
+            {
+                <dt>Reviewed By</dt><dd>@(Model.Expense.ReviewedByName ?? Model.Expense.ReviewedBy.ToString())</dd>
+                <dt>Reviewed At</dt><dd>@Model.Expense.ReviewedAt?.ToString("dd MMM yyyy HH:mm")</dd>
+            }
+            <dt>Created</dt><dd>@Model.Expense.CreatedAt.ToString("dd MMM yyyy HH:mm")</dd>
+        </dl>
+    </div>
+
+    <div class="card action-card">
+        <h2>Actions</h2>
+
+        @if (Model.Expense.StatusName == "Draft")
+        {
+            <form method="post" asp-page-handler="Submit">
+                <input type="hidden" name="id" value="@Model.Expense.ExpenseId" />
+                <button type="submit" class="btn btn-primary btn-full">Submit for Approval</button>
+            </form>
+            <a href="/Expenses/Edit/@Model.Expense.ExpenseId" class="btn btn-secondary btn-full mt-2">Edit Expense</a>
+            <form method="post" asp-page-handler="Delete" class="mt-2"
+                  onsubmit="return confirm('Delete this expense?')">
+                <input type="hidden" name="id" value="@Model.Expense.ExpenseId" />
+                <button type="submit" class="btn btn-danger btn-full">Delete</button>
+            </form>
+        }
+
+        @if (Model.Expense.StatusName == "Submitted")
+        {
+            <p class="manager-note">Manager action required:</p>
+            <form method="post" asp-page-handler="Approve">
+                <input type="hidden" name="id" value="@Model.Expense.ExpenseId" />
+                <div class="form-group">
+                    <label>Reviewing as (User ID)</label>
+                    <input type="number" name="reviewedBy" class="form-control" value="2" />
+                </div>
+                <button type="submit" class="btn btn-success btn-full">✅ Approve</button>
+            </form>
+            <form method="post" asp-page-handler="Reject" class="mt-2">
+                <input type="hidden" name="id" value="@Model.Expense.ExpenseId" />
+                <input type="hidden" name="reviewedBy" value="2" />
+                <button type="submit" class="btn btn-danger btn-full">❌ Reject</button>
+            </form>
+        }
+
+        @if (Model.Expense.StatusName is "Approved" or "Rejected")
+        {
+            <p class="status-final">This expense has been @Model.Expense.StatusName.ToLower() and is now closed.</p>
+        }
+    </div>
+</div>

@@ -1,0 +1,82 @@
+@page
+@model ExpensesApp.Pages.Expenses.IndexModel
+@{
+    ViewData["Title"] = "Expenses";
+}
+
+<div class="page-header">
+    <div>
+        <h1>All Expenses</h1>
+        <p class="page-subtitle">Manage and track all expense claims</p>
+    </div>
+    <a href="/Expenses/Create" class="btn btn-primary">+ New Expense</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.DbError))
+{
+    <div class="alert alert-warning">⚠️ @Model.DbError</div>
+}
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+    <form method="get" class="filter-form">
+        <select name="status" class="filter-select" onchange="this.form.submit()">
+            <option value="">All Statuses</option>
+            @if (Model.CurrentStatus == "Draft")     { <option value="Draft" selected>Draft</option>     }
+            else                                     { <option value="Draft">Draft</option>               }
+            @if (Model.CurrentStatus == "Submitted") { <option value="Submitted" selected>Submitted</option> }
+            else                                     { <option value="Submitted">Submitted</option>         }
+            @if (Model.CurrentStatus == "Approved")  { <option value="Approved" selected>Approved</option>  }
+            else                                     { <option value="Approved">Approved</option>            }
+            @if (Model.CurrentStatus == "Rejected")  { <option value="Rejected" selected>Rejected</option>  }
+            else                                     { <option value="Rejected">Rejected</option>            }
+        </select>
+    </form>
+    <span class="filter-count">@Model.Expenses.Count expense(s)</span>
+</div>
+
+<div class="card">
+    <div class="expense-table-wrapper">
+        <table class="expense-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Employee</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model.Expenses)
+                {
+                    <tr>
+                        <td>@e.ExpenseId</td>
+                        <td>@e.UserName</td>
+                        <td><span class="category-badge">@e.CategoryName</span></td>
+                        <td>@(e.Description ?? "—")</td>
+                        <td class="amount">£@e.AmountGBP.ToString("N2")</td>
+                        <td>@e.ExpenseDate.ToString("dd MMM yyyy")</td>
+                        <td><span class="status-badge status-@e.StatusName.ToLower()">@e.StatusName</span></td>
+                        <td class="actions">
+                            <a href="/Expenses/Details/@e.ExpenseId" class="btn btn-sm btn-outline">View</a>
+                            @if (e.StatusName == "Draft")
+                            {
+                                <a href="/Expenses/Edit/@e.ExpenseId" class="btn btn-sm btn-secondary">Edit</a>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Expenses.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="empty-state">No expenses found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
