@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] – Expense Management</title>
+    <style>
+        /* ================================================================
+           Modern Expense Management UI – clean, professional design
+           ================================================================ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary:   #2563eb;
+            --primary-dk:#1d4ed8;
+            --success:   #16a34a;
+            --warning:   #d97706;
+            --danger:    #dc2626;
+            --info:      #0891b2;
+            --bg:        #f8fafc;
+            --surface:   #ffffff;
+            --border:    #e2e8f0;
+            --text:      #1e293b;
+            --muted:     #64748b;
+            --radius:    0.5rem;
+            --shadow:    0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+            --shadow-md: 0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Nav */
+        nav {
+            background: var(--primary);
+            padding: .75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+        nav .brand {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        nav .brand span { font-size: 1.4rem; }
+        nav a {
+            color: rgba(255,255,255,.85);
+            text-decoration: none;
+            font-size: .9rem;
+            padding: .35rem .75rem;
+            border-radius: var(--radius);
+            transition: background .15s;
+        }
+        nav a:hover, nav a.active { background: rgba(255,255,255,.2); color: #fff; }
+        nav .nav-right { margin-left: auto; display: flex; gap: .5rem; }
+
+        /* Error banner */
+        .error-banner {
+            background: #fef2f2;
+            border-bottom: 2px solid #fca5a5;
+            color: #991b1b;
+            padding: .75rem 1.5rem;
+            font-size: .85rem;
+            display: flex;
+            align-items: flex-start;
+            gap: .5rem;
+        }
+        .error-banner .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: .05rem; }
+        .error-banner strong { display: block; margin-bottom: .25rem; }
+
+        /* Main content */
+        main { padding: 2rem 1.5rem; max-width: 1200px; margin: 0 auto; }
+
+        /* Page header */
+        .page-header {
+            margin-bottom: 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .page-header h1 { font-size: 1.6rem; font-weight: 700; color: var(--text); }
+        .page-header p  { color: var(--muted); font-size: .9rem; margin-top: .25rem; }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        .stat-card .label { color: var(--muted); font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; color: var(--text); margin: .25rem 0; }
+        .stat-card .sub   { color: var(--muted); font-size: .85rem; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .5rem 1rem;
+            border-radius: var(--radius);
+            font-size: .9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all .15s;
+        }
+        .btn-primary  { background: var(--primary);  color: #fff; }
+        .btn-primary:hover { background: var(--primary-dk); }
+        .btn-success  { background: var(--success);  color: #fff; }
+        .btn-success:hover  { filter: brightness(1.1); }
+        .btn-danger   { background: var(--danger);   color: #fff; }
+        .btn-danger:hover   { filter: brightness(1.1); }
+        .btn-outline  { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+        .btn-outline:hover  { background: var(--bg); }
+        .btn-sm { padding: .3rem .7rem; font-size: .8rem; }
+
+        /* Tables */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+        thead th {
+            text-align: left;
+            padding: .7rem 1rem;
+            border-bottom: 2px solid var(--border);
+            color: var(--muted);
+            font-size: .78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            white-space: nowrap;
+        }
+        tbody td { padding: .75rem 1rem; border-bottom: 1px solid var(--border); }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: var(--bg); }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: .2rem .6rem;
+            border-radius: 9999px;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+        .badge-draft     { background: #f1f5f9; color: var(--muted); }
+        .badge-submitted { background: #dbeafe; color: #1e40af; }
+        .badge-approved  { background: #dcfce7; color: #15803d; }
+        .badge-rejected  { background: #fee2e2; color: #b91c1c; }
+        .badge-employee  { background: #e0f2fe; color: #0369a1; }
+        .badge-manager   { background: #faf5ff; color: #7e22ce; }
+
+        /* Forms */
+        .form-group { margin-bottom: 1.25rem; }
+        label { display: block; font-weight: 500; margin-bottom: .4rem; font-size: .9rem; }
+        input[type=text], input[type=email], input[type=number], input[type=date],
+        select, textarea {
+            width: 100%;
+            padding: .55rem .85rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            font-size: .9rem;
+            color: var(--text);
+            background: var(--surface);
+            transition: border-color .15s, box-shadow .15s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
+
+        /* Quick-links (index cards) */
+        .nav-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .nav-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--text);
+            box-shadow: var(--shadow);
+            transition: box-shadow .2s, transform .2s;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+        .nav-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .nav-card .icon { font-size: 2rem; }
+        .nav-card h3    { font-size: 1rem; font-weight: 600; }
+        .nav-card p     { font-size: .82rem; color: var(--muted); }
+
+        /* Alert */
+        .alert { padding: .85rem 1rem; border-radius: var(--radius); margin-bottom: 1rem; font-size: .88rem; }
+        .alert-info    { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+        .alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+        .alert-warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+        .alert-danger  { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+
+        /* Empty state */
+        .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+        .empty .icon { font-size: 3rem; margin-bottom: .75rem; }
+        .empty h3 { font-size: 1.1rem; color: var(--text); margin-bottom: .5rem; }
+
+        footer { text-align: center; padding: 1.5rem; color: var(--muted); font-size: .8rem; border-top: 1px solid var(--border); margin-top: 2rem; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/Index" class="brand"><span>💼</span> ExpenseApp</a>
+    <a href="/Index">Dashboard</a>
+    <a href="/Expenses/Index">Expenses</a>
+    <a href="/Expenses/Create">Add Expense</a>
+    <a href="/Expenses/Approve">Approvals</a>
+    <a href="/Users/Index">Users</a>
+    <div class="nav-right">
+        <a href="/swagger" target="_blank">API Docs</a>
+    </div>
+</nav>
+
+@if (ViewData["DbError"] != null)
+{
+    <div class="error-banner">
+        <span class="icon">⚠️</span>
+        <div>
+            <strong>Database Connection Issue – showing sample data</strong>
+            @ViewData["DbError"]
+        </div>
+    </div>
+}
+
+<main>
+    @RenderBody()
+</main>
+
+<footer>
+    &copy; @DateTime.UtcNow.Year Expense Management System &nbsp;|&nbsp;
+    Powered by ASP.NET 8 &amp; Azure SQL &nbsp;|&nbsp;
+    <a href="/swagger">API Docs</a>
+</footer>
+
+</body>
+</html>

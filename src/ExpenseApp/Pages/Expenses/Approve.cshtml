@@ -1,0 +1,99 @@
+@page
+@model ExpenseApp.Pages.Expenses.ApproveModel
+@{
+    ViewData["Title"] = "Approve / Reject Expenses";
+}
+
+<div class="page-header">
+    <div>
+        <h1>✅ Approve / Reject Expenses</h1>
+        <p>Review submitted expense claims.</p>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-success">@Model.Message</div>
+}
+
+@if (!Model.PendingExpenses.Any())
+{
+    <div class="card">
+        <div class="empty">
+            <div class="icon">🎉</div>
+            <h3>No pending expenses</h3>
+            <p>All submitted expenses have been reviewed.</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        👋 Select a manager reviewer then approve or reject each expense below.
+    </div>
+
+    <!-- Reviewer selector -->
+    <div class="card" style="margin-bottom:1.25rem;padding:1rem 1.5rem;">
+        <form method="get" style="display:flex;align-items:flex-end;gap:1rem;">
+            <div style="flex:1;max-width:300px;">
+                <label for="reviewerId" style="font-size:.85rem;">Reviewing as (Manager)</label>
+                <select id="reviewerId" name="reviewerId" onchange="this.form.submit()">
+                    <option value="0">Select manager…</option>
+                    @foreach (var u in Model.Managers)
+                    {
+                        <option value="@u.UserId" selected="@(Model.ReviewerId == u.UserId)">@u.UserName</option>
+                    }
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Employee</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Submitted</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model.PendingExpenses)
+                    {
+                        <tr>
+                            <td>@e.ExpenseId</td>
+                            <td>@e.UserName</td>
+                            <td>@e.CategoryName</td>
+                            <td><strong>£@e.AmountGBP.ToString("N2")</strong></td>
+                            <td>@e.ExpenseDate.ToString("dd MMM yyyy")</td>
+                            <td style="max-width:200px;">@(e.Description ?? "–")</td>
+                            <td>@e.SubmittedAt?.ToString("dd MMM HH:mm")</td>
+                            <td style="white-space:nowrap;">
+                                <form method="post" style="display:inline;">
+                                    <input type="hidden" name="expenseId" value="@e.ExpenseId" />
+                                    <input type="hidden" name="reviewerId" value="@Model.ReviewerId" />
+                                    @if (Model.ReviewerId == 0)
+                                    {
+                                        <button type="submit" asp-page-handler="Approve" class="btn btn-success btn-sm" disabled>✅ Approve</button>
+                                        <button type="submit" asp-page-handler="Reject" class="btn btn-danger btn-sm" disabled>❌ Reject</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" asp-page-handler="Approve" class="btn btn-success btn-sm">✅ Approve</button>
+                                        <button type="submit" asp-page-handler="Reject" class="btn btn-danger btn-sm">❌ Reject</button>
+                                    }
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

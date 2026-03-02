@@ -1,0 +1,17 @@
+@page
+@model ExpenseApp.Pages.ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="page-header">
+    <h1>⚠️ An error occurred</h1>
+</div>
+
+<div class="card alert-danger" style="max-width:700px;">
+    <p><strong>Request ID:</strong> @Model.RequestId</p>
+    @if (Model.ShowRequestId)
+    {
+        <p style="margin-top:.5rem;">Include this ID when reporting the issue.</p>
+    }
+</div>

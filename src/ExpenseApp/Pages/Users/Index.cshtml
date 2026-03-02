@@ -1,0 +1,65 @@
+@page
+@model ExpenseApp.Pages.Users.IndexModel
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="page-header">
+    <div>
+        <h1>👥 Users</h1>
+        <p>Manage team members.</p>
+    </div>
+    <a href="/Users/Create" class="btn btn-primary">➕ Add User</a>
+</div>
+
+@if (!Model.Users.Any())
+{
+    <div class="card">
+        <div class="empty">
+            <div class="icon">👤</div>
+            <h3>No users found</h3>
+            <p><a href="/Users/Create">Add the first user</a>.</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Manager</th>
+                        <th>Active</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model.Users)
+                    {
+                        <tr>
+                            <td>@u.UserId</td>
+                            <td><strong>@u.UserName</strong></td>
+                            <td>@u.Email</td>
+                            <td>
+                                <span class="badge badge-@u.RoleName.ToLower()">@u.RoleName</span>
+                            </td>
+                            <td>@(u.ManagerName ?? "–")</td>
+                            <td>@(u.IsActive ? "✅" : "❌")</td>
+                            <td>@u.CreatedAt.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <a href="/Users/Edit?id=@u.UserId" class="btn btn-outline btn-sm">Edit</a>
+                                <a href="/Expenses/Index?userFilter=@u.UserId" class="btn btn-outline btn-sm">Expenses</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
