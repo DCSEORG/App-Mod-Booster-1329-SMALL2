@@ -246,11 +246,11 @@ public class DatabaseService : IDatabaseService
         };
         cmd.Parameters.AddWithValue("@ExpenseId",  expenseId);
         cmd.Parameters.AddWithValue("@CategoryId", req.CategoryId);
-        cmd.Parameters.AddWithValue("@AmountMinor",req.AmountMinor);
+        cmd.Parameters.AddWithValue("@AmountMinor", req.AmountMinor);
         cmd.Parameters.AddWithValue("@Currency",   req.Currency);
-        cmd.Parameters.AddWithValue("@ExpenseDate",req.ExpenseDate.Date);
-        cmd.Parameters.AddWithValue("@Description",(object?)req.Description ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@ReceiptFile",(object?)req.ReceiptFile  ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@ExpenseDate", req.ExpenseDate.Date);
+        cmd.Parameters.AddWithValue("@Description", (object?)req.Description ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@ReceiptFile",  (object?)req.ReceiptFile  ?? DBNull.Value);
         await using var reader = await cmd.ExecuteReaderAsync();
         if (await reader.ReadAsync())
             return reader.GetInt32(reader.GetOrdinal("RowsAffected"));

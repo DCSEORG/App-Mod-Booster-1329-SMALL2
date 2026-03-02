@@ -51,7 +51,7 @@ public class EditModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "EditUser GET failed for {Id}", id);
-            ViewData["DbError"] = ExpenseApp.Pages.IndexModel.BuildErrorMessage(ex);
+            ViewData["DbError"] = ErrorMessageHelper.BuildErrorMessage(ex);
         }
     }
 
@@ -75,7 +75,7 @@ public class EditModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "EditUser POST failed");
-            ViewData["DbError"] = ExpenseApp.Pages.IndexModel.BuildErrorMessage(ex);
+            ViewData["DbError"] = ErrorMessageHelper.BuildErrorMessage(ex);
         }
         return Page();
     }

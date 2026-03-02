@@ -37,7 +37,7 @@ public class ApproveModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Approve failed for {Id}", expenseId);
-            ViewData["DbError"] = IndexModel_Pages.BuildErrorMessage(ex);
+            ViewData["DbError"] = ErrorMessageHelper.BuildErrorMessage(ex);
         }
         ReviewerId = reviewerId;
         await LoadDataAsync();
@@ -54,7 +54,7 @@ public class ApproveModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Reject failed for {Id}", expenseId);
-            ViewData["DbError"] = IndexModel_Pages.BuildErrorMessage(ex);
+            ViewData["DbError"] = ErrorMessageHelper.BuildErrorMessage(ex);
         }
         ReviewerId = reviewerId;
         await LoadDataAsync();
@@ -72,7 +72,7 @@ public class ApproveModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "ApproveModel: failed to load data");
-            ViewData["DbError"] = IndexModel_Pages.BuildErrorMessage(ex);
+            ViewData["DbError"] = ErrorMessageHelper.BuildErrorMessage(ex);
             PendingExpenses = DummyData.GetExpenses().Where(e => e.StatusName == "Submitted").ToList();
             Managers        = DummyData.GetUsers().Where(u => u.RoleName == "Manager").ToList();
         }

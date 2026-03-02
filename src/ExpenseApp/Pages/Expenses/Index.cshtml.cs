@@ -39,7 +39,7 @@ public class IndexModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Expenses/Index: failed to load data");
-            ViewData["DbError"] = IndexModel_Pages.BuildErrorMessage(ex);
+            ViewData["DbError"] = ErrorMessageHelper.BuildErrorMessage(ex);
             Expenses = DummyData.GetExpenses();
             Statuses = DummyData.GetStatuses();
             Users    = DummyData.GetUsers();
@@ -47,8 +47,9 @@ public class IndexModel : PageModel
     }
 }
 
-internal static class IndexModel_Pages
+internal static class ExpensesPageHelper
 {
+    // Retained for potential future use; delegates to the shared helper.
     public static string BuildErrorMessage(Exception ex)
-        => ExpenseApp.Pages.IndexModel.BuildErrorMessage(ex);
+        => ErrorMessageHelper.BuildErrorMessage(ex);
 }

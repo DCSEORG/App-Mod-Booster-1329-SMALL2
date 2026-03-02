@@ -27,7 +27,7 @@ public class DetailsModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Details: failed to load expense {Id}", id);
-            ViewData["DbError"] = IndexModel_Pages.BuildErrorMessage(ex);
+            ViewData["DbError"] = ErrorMessageHelper.BuildErrorMessage(ex);
             Expense = DummyData.GetExpenses().FirstOrDefault(e => e.ExpenseId == id)
                       ?? DummyData.GetExpenses().First();
         }

@@ -6,8 +6,8 @@ Before executing, the MANAGED-IDENTITY-NAME placeholder in script.sql is replace
 with the actual managed identity name supplied via the MANAGED_IDENTITY_NAME
 environment variable (set by deploy-app.sh).
 
-Cross-platform sed usage (Mac-compatible .bak extension):
-    sed -i.bak "s/PATTERN/REPLACEMENT/g" file && rm -f file.bak
+The placeholder replacement uses Python string substitution, which is cross-platform
+and requires no external tools.
 
 Dependencies (installed by deploy-app.sh):
     pip3 install pyodbc azure-identity

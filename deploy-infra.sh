@@ -56,9 +56,9 @@ MI_OUTPUT=$(az deployment group create \
   --query          "properties.outputs" \
   --output         json)
 
-export MANAGED_IDENTITY_ID=$(echo "$MI_OUTPUT"       | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['managedIdentityId']['value'])")
-export AZURE_CLIENT_ID=$(echo "$MI_OUTPUT"            | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['managedIdentityClientId']['value'])")
-export MANAGED_IDENTITY_PRINCIPAL_ID=$(echo "$MI_OUTPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['managedIdentityPrincipalId']['value'])")
+export MANAGED_IDENTITY_ID=$(echo "$MI_OUTPUT"           | jq -r '.managedIdentityId.value')
+export AZURE_CLIENT_ID=$(echo "$MI_OUTPUT"               | jq -r '.managedIdentityClientId.value')
+export MANAGED_IDENTITY_PRINCIPAL_ID=$(echo "$MI_OUTPUT" | jq -r '.managedIdentityPrincipalId.value')
 
 # Derive the managed identity name from the resource ID (last segment)
 export MANAGED_IDENTITY_NAME=$(echo "$MANAGED_IDENTITY_ID" | awk -F'/' '{print $NF}')
@@ -78,8 +78,8 @@ APP_OUTPUT=$(az deployment group create \
   --query "properties.outputs" \
   --output json)
 
-export APP_SERVICE_NAME=$(echo "$APP_OUTPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['appServiceName']['value'])")
-APP_URL=$(echo "$APP_OUTPUT"                  | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['appServiceUrl']['value'])")
+export APP_SERVICE_NAME=$(echo "$APP_OUTPUT" | jq -r '.appServiceName.value')
+APP_URL=$(echo "$APP_OUTPUT"                  | jq -r '.appServiceUrl.value')
 
 echo "  ✓ App Service : $APP_SERVICE_NAME"
 echo "  ✓ App URL     : $APP_URL"
@@ -97,9 +97,9 @@ SQL_OUTPUT=$(az deployment group create \
   --query "properties.outputs" \
   --output json)
 
-export SQL_SERVER_FQDN=$(echo "$SQL_OUTPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['sqlServerFqdn']['value'])")
-SQL_SERVER_NAME=$(echo "$SQL_OUTPUT"         | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['sqlServerName']['value'])")
-DATABASE_NAME=$(echo "$SQL_OUTPUT"           | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['databaseName']['value'])")
+export SQL_SERVER_FQDN=$(echo "$SQL_OUTPUT" | jq -r '.sqlServerFqdn.value')
+SQL_SERVER_NAME=$(echo "$SQL_OUTPUT"         | jq -r '.sqlServerName.value')
+DATABASE_NAME=$(echo "$SQL_OUTPUT"           | jq -r '.databaseName.value')
 
 echo "  ✓ SQL Server : $SQL_SERVER_FQDN"
 echo "  ✓ Database   : $DATABASE_NAME"

@@ -26,7 +26,7 @@ public class IndexModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Users/Index failed");
-            ViewData["DbError"] = ExpenseApp.Pages.IndexModel.BuildErrorMessage(ex);
+            ViewData["DbError"] = ErrorMessageHelper.BuildErrorMessage(ex);
             Users = DummyData.GetUsers();
         }
     }

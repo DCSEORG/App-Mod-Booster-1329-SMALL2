@@ -40,7 +40,7 @@ public class CreateModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "CreateUser failed");
-            ViewData["DbError"] = ExpenseApp.Pages.IndexModel.BuildErrorMessage(ex);
+            ViewData["DbError"] = ErrorMessageHelper.BuildErrorMessage(ex);
         }
         return Page();
     }

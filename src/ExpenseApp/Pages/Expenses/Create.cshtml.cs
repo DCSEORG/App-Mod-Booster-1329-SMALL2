@@ -43,7 +43,7 @@ public class CreateModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "CreateExpense failed");
-            ViewData["DbError"] = IndexModel_Pages.BuildErrorMessage(ex);
+            ViewData["DbError"] = ErrorMessageHelper.BuildErrorMessage(ex);
         }
 
         return Page();

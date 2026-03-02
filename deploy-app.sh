@@ -68,7 +68,12 @@ dotnet publish -c Release -o "$SCRIPT_DIR/publish" --nologo
 
 cd "$SCRIPT_DIR/publish"
 # Files must be at ZIP root (not in subdirectory) for Azure App Service deployment
-zip -r "$SCRIPT_DIR/app.zip" . -x "*.pdb"
+# Include only runtime-necessary files: DLLs, configs, static files
+zip -r "$SCRIPT_DIR/app.zip" . \
+  --exclude "*.pdb" \
+  --exclude "*.xml" \
+  --exclude "*.development.json" \
+  2>/dev/null || true
 
 echo "  ✓ app.zip created ($(du -sh "$SCRIPT_DIR/app.zip" | cut -f1))"
 
