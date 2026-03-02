@@ -1,0 +1,77 @@
+@page
+@model ExpenseApp.Pages.Expenses.DetailsModel
+@{
+    ViewData["Title"] = $"Expense #{Model.Expense?.ExpenseId}";
+}
+
+<div class="page-header">
+    <div>
+        <h1>🧾 Expense #@Model.Expense?.ExpenseId</h1>
+        <p>Expense detail view.</p>
+    </div>
+    <a href="/Expenses/Index" class="btn btn-outline">← Back to Expenses</a>
+</div>
+
+@if (Model.Expense == null)
+{
+    <div class="alert alert-warning">Expense not found.</div>
+}
+else
+{
+    var e = Model.Expense;
+    <div class="card" style="max-width:700px;">
+        <table style="width:100%;border-collapse:collapse;">
+            <tr>
+                <td style="padding:.6rem 0;color:var(--muted);width:180px;">Employee</td>
+                <td><strong>@e.UserName</strong></td>
+            </tr>
+            <tr>
+                <td style="padding:.6rem 0;color:var(--muted);">Category</td>
+                <td>@e.CategoryName</td>
+            </tr>
+            <tr>
+                <td style="padding:.6rem 0;color:var(--muted);">Amount</td>
+                <td><strong>£@e.AmountGBP.ToString("N2") @e.Currency</strong></td>
+            </tr>
+            <tr>
+                <td style="padding:.6rem 0;color:var(--muted);">Expense Date</td>
+                <td>@e.ExpenseDate.ToString("dd MMMM yyyy")</td>
+            </tr>
+            <tr>
+                <td style="padding:.6rem 0;color:var(--muted);">Status</td>
+                <td><span class="badge badge-@e.StatusName.ToLower()">@e.StatusName</span></td>
+            </tr>
+            <tr>
+                <td style="padding:.6rem 0;color:var(--muted);">Description</td>
+                <td>@(e.Description ?? "–")</td>
+            </tr>
+            <tr>
+                <td style="padding:.6rem 0;color:var(--muted);">Receipt</td>
+                <td>@(e.ReceiptFile ?? "–")</td>
+            </tr>
+            <tr>
+                <td style="padding:.6rem 0;color:var(--muted);">Submitted</td>
+                <td>@(e.SubmittedAt.HasValue ? e.SubmittedAt.Value.ToString("dd MMM yyyy HH:mm") : "Not yet submitted")</td>
+            </tr>
+            @if (e.ReviewedByName != null)
+            {
+                <tr>
+                    <td style="padding:.6rem 0;color:var(--muted);">Reviewed By</td>
+                    <td>@e.ReviewedByName on @e.ReviewedAt?.ToString("dd MMM yyyy HH:mm")</td>
+                </tr>
+            }
+        </table>
+
+        <div style="margin-top:1.5rem;display:flex;gap:.75rem;">
+            @if (e.StatusName == "Draft")
+            {
+                <a href="/Expenses/Edit?id=@e.ExpenseId" class="btn btn-primary">✏️ Edit</a>
+            }
+            @if (e.StatusName == "Submitted")
+            {
+                <a href="/Expenses/Approve" class="btn btn-success">✅ Review</a>
+            }
+            <a href="/Expenses/Index" class="btn btn-outline">← Back</a>
+        </div>
+    </div>
+}

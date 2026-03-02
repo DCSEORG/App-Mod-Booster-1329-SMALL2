@@ -1,0 +1,73 @@
+@page
+@model ExpenseApp.Pages.Expenses.EditModel
+@{
+    ViewData["Title"] = $"Edit Expense #{Model.Input?.ExpenseId}";
+}
+
+<div class="page-header">
+    <div>
+        <h1>✏️ Edit Expense #@Model.Input?.ExpenseId</h1>
+        <p>Update a draft expense.</p>
+    </div>
+    <a href="/Expenses/Index" class="btn btn-outline">← Back to Expenses</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">✅ @Model.SuccessMessage</div>
+}
+
+@if (Model.Input == null)
+{
+    <div class="alert alert-warning">Expense not found or cannot be edited (only Draft expenses can be edited).</div>
+}
+else
+{
+    <div class="card" style="max-width:700px;">
+        <form method="post">
+            <input type="hidden" asp-for="Input.ExpenseId" />
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Input.CategoryId">Category</label>
+                    <select asp-for="Input.CategoryId" required>
+                        @foreach (var c in Model.Categories)
+                        {
+                            <option value="@c.CategoryId">@c.CategoryName</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.AmountMinor">Amount (pence)</label>
+                    <input type="number" asp-for="Input.AmountMinor" min="1" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Input.ExpenseDate">Expense Date</label>
+                    <input type="date" asp-for="Input.ExpenseDate" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Currency">Currency</label>
+                    <input type="text" asp-for="Input.Currency" maxlength="3" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Description">Description</label>
+                <textarea asp-for="Input.Description" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.ReceiptFile">Receipt Reference</label>
+                <input type="text" asp-for="Input.ReceiptFile" />
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                <a href="/Expenses/Details?id=@Model.Input.ExpenseId" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+}

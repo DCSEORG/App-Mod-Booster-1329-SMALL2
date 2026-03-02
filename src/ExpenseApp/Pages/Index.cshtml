@@ -1,0 +1,68 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="page-header">
+    <div>
+        <h1>👋 Welcome to Expense Management</h1>
+        <p>Manage expenses, approvals, and team members from one place.</p>
+    </div>
+</div>
+
+<!-- Summary stats -->
+<div class="card-grid">
+    <div class="stat-card">
+        <div class="label">Total Expenses</div>
+        <div class="value">@Model.TotalExpenses</div>
+        <div class="sub">all time</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Pending Approval</div>
+        <div class="value" style="color:var(--warning)">@Model.PendingCount</div>
+        <div class="sub">awaiting review</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Approved</div>
+        <div class="value" style="color:var(--success)">@Model.ApprovedCount</div>
+        <div class="sub">this period</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Total Users</div>
+        <div class="value">@Model.TotalUsers</div>
+        <div class="sub">active team members</div>
+    </div>
+</div>
+
+<!-- Quick navigation -->
+<div class="card">
+    <h2 style="margin-bottom:1rem;font-size:1.1rem;font-weight:600;">Quick Actions</h2>
+    <div class="nav-cards">
+        <a href="/Expenses/Index" class="nav-card">
+            <span class="icon">📋</span>
+            <h3>View Expenses</h3>
+            <p>Browse and filter all expense claims</p>
+        </a>
+        <a href="/Expenses/Create" class="nav-card">
+            <span class="icon">➕</span>
+            <h3>Add Expense</h3>
+            <p>Submit a new expense claim</p>
+        </a>
+        <a href="/Expenses/Approve" class="nav-card">
+            <span class="icon">✅</span>
+            <h3>Approve / Reject</h3>
+            <p>Review submitted expenses</p>
+        </a>
+        <a href="/Users/Index" class="nav-card">
+            <span class="icon">👥</span>
+            <h3>Manage Users</h3>
+            <p>View and edit team members</p>
+        </a>
+        <a href="/swagger" target="_blank" class="nav-card">
+            <span class="icon">🔌</span>
+            <h3>API Documentation</h3>
+            <p>Explore and test REST endpoints</p>
+        </a>
+    </div>
+</div>

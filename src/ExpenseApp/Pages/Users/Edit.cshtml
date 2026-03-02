@@ -1,0 +1,68 @@
+@page
+@model ExpenseApp.Pages.Users.EditModel
+@{
+    ViewData["Title"] = $"Edit User #{Model.Input?.UserId}";
+}
+
+<div class="page-header">
+    <div>
+        <h1>✏️ Edit User</h1>
+        <p>Update team member details.</p>
+    </div>
+    <a href="/Users/Index" class="btn btn-outline">← Back to Users</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">✅ @Model.SuccessMessage</div>
+}
+
+@if (Model.Input == null)
+{
+    <div class="alert alert-warning">User not found.</div>
+}
+else
+{
+    <div class="card" style="max-width:600px;">
+        <form method="post">
+            <input type="hidden" asp-for="Input.UserId" />
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Input.UserName">Full Name</label>
+                    <input type="text" asp-for="Input.UserName" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Email">Email</label>
+                    <input type="email" asp-for="Input.Email" required />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Input.RoleId">Role</label>
+                    <select asp-for="Input.RoleId" required>
+                        <option value="1">Employee</option>
+                        <option value="2">Manager</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.ManagerId">Manager</label>
+                    <select asp-for="Input.ManagerId">
+                        <option value="">No manager</option>
+                        @foreach (var u in Model.Managers)
+                        {
+                            <option value="@u.UserId">@u.UserName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:.5rem;">
+                <input type="checkbox" asp-for="Input.IsActive" style="width:auto;" />
+                <label asp-for="Input.IsActive" style="margin-bottom:0;">Active</label>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                <a href="/Users/Index" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+}

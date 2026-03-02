@@ -1,0 +1,80 @@
+@page
+@model ExpenseApp.Pages.Expenses.CreateModel
+@{
+    ViewData["Title"] = "Add Expense";
+}
+
+<div class="page-header">
+    <div>
+        <h1>➕ Add Expense</h1>
+        <p>Submit a new expense claim.</p>
+    </div>
+    <a href="/Expenses/Index" class="btn btn-outline">← Back to Expenses</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">✅ @Model.SuccessMessage</div>
+}
+
+<div class="card" style="max-width:700px;">
+    <form method="post">
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="Input.UserId">Employee</label>
+                <select asp-for="Input.UserId" required>
+                    <option value="">Select employee…</option>
+                    @foreach (var u in Model.Users)
+                    {
+                        <option value="@u.UserId">@u.UserName</option>
+                    }
+                </select>
+                <span asp-validation-for="Input.UserId" style="color:var(--danger);font-size:.8rem;"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.CategoryId">Category</label>
+                <select asp-for="Input.CategoryId" required>
+                    <option value="">Select category…</option>
+                    @foreach (var c in Model.Categories)
+                    {
+                        <option value="@c.CategoryId">@c.CategoryName</option>
+                    }
+                </select>
+                <span asp-validation-for="Input.CategoryId" style="color:var(--danger);font-size:.8rem;"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="Input.AmountMinor">Amount (pence) – e.g. £12.34 = 1234</label>
+                <input type="number" asp-for="Input.AmountMinor" min="1" placeholder="e.g. 1234" required />
+                <span asp-validation-for="Input.AmountMinor" style="color:var(--danger);font-size:.8rem;"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ExpenseDate">Expense Date</label>
+                <input type="date" asp-for="Input.ExpenseDate" required />
+                <span asp-validation-for="Input.ExpenseDate" style="color:var(--danger);font-size:.8rem;"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.Description">Description</label>
+            <textarea asp-for="Input.Description" rows="3" placeholder="Brief description of the expense…"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.ReceiptFile">Receipt Reference (URL or path)</label>
+            <input type="text" asp-for="Input.ReceiptFile" placeholder="/receipts/my-receipt.jpg" />
+        </div>
+
+        <div class="form-group" style="display:flex;align-items:center;gap:.5rem;">
+            <input type="checkbox" asp-for="Input.Submit" id="submitNow" style="width:auto;" />
+            <label for="submitNow" style="margin-bottom:0;">Submit for approval immediately</label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">💾 Save Expense</button>
+            <a href="/Expenses/Index" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
